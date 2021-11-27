@@ -25,13 +25,13 @@ from ..utils.metadata import generate_uuid, random_string
 
 views = Blueprint("views", __name__)
 
+subpath = os.environ.get('EXCALIBUR_SUBPATH','')
 
-@views.route("/", methods=["GET"])
+@views.route(subpath+"/", methods=["GET"])
 def index():
     return redirect(url_for("views.files"))
 
-
-@views.route("/files", methods=["GET", "POST"])
+@views.route(subpath+"/files", methods=["GET", "POST"])
 def files():
     if request.method == "GET":
         files_response = []
@@ -83,7 +83,7 @@ def files():
     return jsonify(file_id=file_id)
 
 
-@views.route("/workspaces/<string:file_id>", methods=["GET"])
+@views.route(subpath+"/workspaces/<string:file_id>", methods=["GET"])
 def workspaces(file_id):
     session = Session()
     file = session.query(File).filter(File.file_id == file_id).first()
@@ -114,8 +114,8 @@ def workspaces(file_id):
     )
 
 
-@views.route("/rules", methods=["GET", "POST"], defaults={"rule_id": None})
-@views.route("/rules/<string:rule_id>", methods=["GET"])
+@views.route(subpath+"/rules", methods=["GET", "POST"], defaults={"rule_id": None})
+@views.route(subpath+"/rules/<string:rule_id>", methods=["GET"])
 def rules(rule_id):
     if request.method == "GET":
         if rule_id is not None:
@@ -163,8 +163,8 @@ def rules(rule_id):
     return jsonify(message=message)
 
 
-@views.route("/jobs", methods=["GET", "POST"], defaults={"job_id": None})
-@views.route("/jobs/<string:job_id>", methods=["GET"])
+@views.route(subpath+"/jobs", methods=["GET", "POST"], defaults={"job_id": None})
+@views.route(subpath+"/jobs/<string:job_id>", methods=["GET"])
 def jobs(job_id):
     if request.method == "GET":
         if job_id is not None:
@@ -245,7 +245,7 @@ def jobs(job_id):
     return jsonify(job_id=job_id)
 
 
-@views.route("/download", methods=["POST"])
+@views.route(subpath+"/download", methods=["POST"])
 def download():
     job_id = request.form["job_id"]
     f = request.form["format"]
